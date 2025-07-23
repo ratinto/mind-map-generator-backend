@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ["*"]
 # Remove ALLOWED_CORS_ORIGINS and use CORS_ALLOWED_ORIGINS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://mind-map-generator-eight.vercel.app/",
 ]
 
 # Application definition
