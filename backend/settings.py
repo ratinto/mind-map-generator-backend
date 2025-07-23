@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-ALLOWED_CORS_ORIGINS = [
+# Remove ALLOWED_CORS_ORIGINS and use CORS_ALLOWED_ORIGINS
+CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
 
@@ -42,9 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
+    'corsheaders', 
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
