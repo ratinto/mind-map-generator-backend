@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["*"]
 # Remove ALLOWED_CORS_ORIGINS and use CORS_ALLOWED_ORIGINS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "https://mind-map-generator-eight.vercel.app/",
+    "https://mind-map-generator-eight.vercel.app",
 ]
 
 # Application definition
@@ -129,3 +129,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# REST Framework Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
+}
