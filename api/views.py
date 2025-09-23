@@ -12,6 +12,19 @@ class MindMapViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Get user_id from request (stored in session or passed as parameter)
         user_id = self.request.session.get('user_id') or self.request.GET.get('user_id')
+        
+        # If no user_id found, try to get from Authorization header (Bearer token)
+        if not user_id:
+            auth_header = self.request.headers.get('Authorization')
+            if auth_header and auth_header.startswith('Bearer '):
+                token = auth_header.split(' ')[1]
+                # Extract user_id from our simple token format: "user_{id}"
+                if token.startswith('user_'):
+                    try:
+                        user_id = int(token.replace('user_', ''))
+                    except ValueError:
+                        pass
+        
         if user_id:
             try:
                 app_user = AppUser.objects.get(id=user_id)
@@ -23,6 +36,19 @@ class MindMapViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Get user_id from request
         user_id = self.request.session.get('user_id') or self.request.data.get('user_id')
+        
+        # If no user_id found, try to get from Authorization header (Bearer token)
+        if not user_id:
+            auth_header = self.request.headers.get('Authorization')
+            if auth_header and auth_header.startswith('Bearer '):
+                token = auth_header.split(' ')[1]
+                # Extract user_id from our simple token format: "user_{id}"
+                if token.startswith('user_'):
+                    try:
+                        user_id = int(token.replace('user_', ''))
+                    except ValueError:
+                        pass
+        
         if user_id:
             try:
                 app_user = AppUser.objects.get(id=user_id)
@@ -87,7 +113,23 @@ class AppUserLoginView(APIView):
 @api_view(['GET'])
 def user_profile(request):
     """Get current user profile"""
+    user_id = None
+    
+    # First try to get user_id from session (for session-based auth)
     user_id = request.session.get('user_id')
+    
+    # If no session, try to get from Authorization header (Bearer token)
+    if not user_id:
+        auth_header = request.headers.get('Authorization')
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+            # Extract user_id from our simple token format: "user_{id}"
+            if token.startswith('user_'):
+                try:
+                    user_id = int(token.replace('user_', ''))
+                except ValueError:
+                    pass
+    
     if user_id:
         try:
             app_user = AppUser.objects.get(id=user_id)
@@ -95,4 +137,5 @@ def user_profile(request):
             return Response(serializer.data)
         except AppUser.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
     return Response({'error': 'Not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)

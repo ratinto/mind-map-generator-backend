@@ -27,10 +27,21 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-# Remove ALLOWED_CORS_ORIGINS and use CORS_ALLOWED_ORIGINS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "https://mind-map-generator-eight.vercel.app",
+# CORS Configuration for development
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for development
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow specific headers
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 # Application definition
