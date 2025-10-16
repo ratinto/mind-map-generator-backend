@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from .models import MindMap, AppUser
 from .serializers import MindMapSerializer, AppUserRegisterSerializer, AppUserLoginSerializer, AppUserSerializer
-from django.contrib.auth.hashers import make_password, check_password
 
 class MindMapViewSet(viewsets.ModelViewSet):
     serializer_class = MindMapSerializer
@@ -75,11 +74,11 @@ class AppUserRegisterView(APIView):
                         'error': 'Email already exists. Please use a different email address.'
                     }, status=status.HTTP_400_BAD_REQUEST)
                 
-                # Create AppUser with hashed password
+                # Create AppUser with plain text password
                 app_user = AppUser.objects.create(
                     username=serializer.validated_data['username'],
                     email=serializer.validated_data['email'],
-                    password=make_password(serializer.validated_data['password'])
+                    password=serializer.validated_data['password']
                 )
                 
                 return Response({
@@ -115,7 +114,7 @@ class AppUserLoginView(APIView):
             
             try:
                 app_user = AppUser.objects.get(username=username)
-                if check_password(password, app_user.password):
+                if password == app_user.password:
                     # Store user_id in session
                     request.session['user_id'] = app_user.id
                     
