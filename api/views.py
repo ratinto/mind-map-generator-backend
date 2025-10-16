@@ -63,6 +63,18 @@ class AppUserRegisterView(APIView):
         serializer = AppUserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             try:
+                # Check if username already exists
+                if AppUser.objects.filter(username=serializer.validated_data['username']).exists():
+                    return Response({
+                        'error': 'Username already exists. Please choose a different username.'
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                
+                # Check if email already exists
+                if AppUser.objects.filter(email=serializer.validated_data['email']).exists():
+                    return Response({
+                        'error': 'Email already exists. Please use a different email address.'
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                
                 # Create AppUser with hashed password
                 app_user = AppUser.objects.create(
                     username=serializer.validated_data['username'],
@@ -78,7 +90,21 @@ class AppUserRegisterView(APIView):
                 return Response({
                     'error': f'Registration failed: {str(e)}'
                 }, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Handle specific field errors from serializer
+        errors = serializer.errors
+        if 'username' in errors:
+            return Response({
+                'error': 'Username already exists. Please choose a different username.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        elif 'email' in errors:
+            return Response({
+                'error': 'Email already exists. Please use a different email address.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                'error': 'Invalid data provided. Please check your inputs.'
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 class AppUserLoginView(APIView):
     def post(self, request):
