@@ -6,7 +6,7 @@ class MindMapSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = MindMap
-        fields = ['id', 'name', 'nodes', 'edges', 'owner', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'nodes', 'edges', 'drawing_paths', 'owner', 'created_at', 'updated_at']
         read_only_fields = ['owner', 'created_at', 'updated_at']
 
 class AppUserRegisterSerializer(serializers.ModelSerializer):

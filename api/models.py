@@ -13,6 +13,7 @@ class MindMap(models.Model):
     name = models.CharField(max_length=100)
     nodes = models.JSONField(default=list) 
     edges = models.JSONField(default=list)
+    drawing_paths = models.JSONField(default=list)
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name='mindmaps', null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
